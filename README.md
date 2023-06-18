@@ -16,3 +16,6 @@ Idea taken from https://twitter.com/yush_g (https://github.com/Divide-By-0/ideas
 
 ## How to use
 Get your client_id from soundcloud (you can use the developer console from any browser) and save it in a file named client_id (located in the same directory as the python script).
+```console
+$> python3 sc-explorer.py
+```
