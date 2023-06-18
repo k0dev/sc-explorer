@@ -1,6 +1,7 @@
 # sc-explorer
 ## This script uses undocumented soundcloud APIs (since you cannot currently ask for an api key). Use it at your own risk! (your soundcloud account might get banned)
 ## NOT FINISHED, UNDER DEVELOPMENT
+- TODO: massive refactor (this code is a prototype, I basically copy-pasted from the jupyther notebook that I was using to test things quickly)
 - TODO: explore different genres (currently hiphop-rap is hardcoded) (easy)
 - TODO: actually add liked songs to a playlist (easy)
 - TODO: develop an actual algorithm to suggest better songs based on previously liked ones? (idk)
