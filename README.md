@@ -3,6 +3,7 @@
 ## NOT FINISHED, UNDER DEVELOPMENT
 - TODO: massive refactor (this code is a prototype, I basically copy-pasted from the jupyther notebook that I was using to test things quickly)
 - TODO: explore different genres (currently hiphop-rap is hardcoded) (easy)
+- TODO: explore songs of a given playlist or artist or another user or similar artists to a given one?
 - TODO: actually add liked songs to a playlist (easy)
 - TODO: develop an actual algorithm to suggest better songs based on previously liked ones? (idk)
 - TODO: GUI?
