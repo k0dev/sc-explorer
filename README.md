@@ -1,6 +1,6 @@
 # soundcloud explorer
 Plays the most commented 10 seconds of a random song on SoundCloud and adds it to a playlist if you like it
-## This script uses undocumented soundcloud APIs (since you cannot currently ask for an api key). Use it at your own risk! (your soundcloud account might get banned)
+## This script uses undocumented soundcloud APIs (since you cannot currently ask for an api key). Use it at your own risk! (theoretically your soundcloud account might get banned)
 ## NOT FINISHED, UNDER DEVELOPMENT
 - TODO: massive refactor (this code is a prototype, I basically copy-pasted from the jupyther notebook that I was using to test things quickly)
 - TODO: explore different genres (currently hiphop-rap is hardcoded) (easy)
