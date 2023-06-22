@@ -1,9 +1,5 @@
 # sc-explorer
-<<<<<<< HEAD
-Plays the most commented 10 seconds of a random song on SoundCloud and adds it to a playlist if you like it
-=======
 Plays the most commented 10 seconds of a random song on SoundCloud® and adds it to a playlist if you like it
->>>>>>> e946c7d (update README.md)
 
 ## This script uses undocumented SoundCloud® APIs (since you cannot currently ask for an api key). Use it at your own risk! (theoretically your account might get banned)
 ## NOT PRODUCTION READY YET (RUN IT ONLY LOCALLY)
