@@ -8,7 +8,7 @@ Plays the most commented 10 seconds of a random song on SoundCloud® and adds it
 - TODO: explore different playlists (currently hardcoded) (easy)
 - TODO: explore songs of a given playlist or artist or another user or similar artists to a given one?
 - TODO: develop an actual algorithm to suggest better songs based on previously liked ones? (idk)
-- TODO: better gui lol
+- TODO: better UI lol
 
 ## Credits
 Idea taken from https://twitter.com/yush_g (https://github.com/Divide-By-0/ideas-for-projects-people-would-use)
@@ -20,3 +20,6 @@ $ echo YOUR_CLIENT_ID > client_id
 $ echo YOUR_OAUTH_TOKEN > oauth
 $ flask --app sc-explorer run --debug
 ```
+
+## Screenshots
+https://imgur.com/a/ZDAE87z
