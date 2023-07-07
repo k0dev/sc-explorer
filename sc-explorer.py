@@ -9,8 +9,13 @@ with open('client_id', 'r') as f:
     client_id = f.read().strip()
 with open('oauth', 'r') as f:
     oauth = f.read().strip()
+with open('secret', 'r') as f:
+    secret = f.read().strip()
+with open('website_key') as f:
+    website_key = f.read().strip()
 
 api_url = 'https://api-v2.soundcloud.com'
+captcha_api_url = 'https://www.google.com/recaptcha/api/siteverify'
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36',
@@ -25,7 +30,8 @@ authenticated_headers = {
 def most_commented_window_position(client_id, track_id, comments_per_request, time_window_size_sec, max_comments):
     url = 'https://api-widget.soundcloud.com/resolve?url=https://api.soundcloud.com/tracks/'+track_id+'&format=json&client_id='+client_id
     r = requests.get(url, headers=headers)
-    assert r.status_code == 200
+    if r.status_code != 200:
+        return -1
     response = r.json()
     commentable = response['commentable']
     comments_count = response['comment_count']
@@ -40,11 +46,11 @@ def most_commented_window_position(client_id, track_id, comments_per_request, ti
     for offset in range(0, comments_count, comments_per_request):
         comment_url = api_url+'/tracks/'+track_id+'/comments?threaded=0&client_id=' + client_id + '&limit='+str(comments_per_request)+'&offset='+str(offset)
         r = requests.get(comment_url, headers=headers)
-        assert r.status_code == 200
+        if r.status_code != 200:
+            return -1
         response = r.json()['collection']
         for comment in response:
             if comment['timestamp'] is None or comment['timestamp'] > track_duration_ms or comment['timestamp']//1000 == 0:
-                #print("[-] skipping comment: no timestamp or wrong timestamp?")
                 continue
             else:
                 timeline[comment['timestamp']//1000] += 1
@@ -65,7 +71,9 @@ def create_empty_public_playlist(title):
     url = api_url + '/playlists?client_id=' + client_id
     body = {'playlist':{"title": title,"sharing":"public","tracks":[],"_resource_type":"playlist"}}
     r = requests.post(url, headers=authenticated_headers, json=body)
-    assert r.status_code == 201
+    if r.status_code != 201:
+        print('[-] Error creating empty public playlist')
+        return 'error'
     print('[*] Created empty public playlist "' + title + '"')
     return str(r.json()['id'])
 
@@ -73,14 +81,24 @@ def add_songs_to_playlist(playlist_id, song_list):
     url = api_url + '/playlists/' + playlist_id + '?client_id='+ client_id
     body = {"playlist":{"tracks":song_list}}
     r = requests.put(url, headers=authenticated_headers, json=body)
-    assert r.status_code == 200
+    if r.status_code != 200:
+        print('[-] Error adding songs to playlist')
+        return None
     print('[*] Added ' + str(len(song_list)) + ' songs to the playlist')
     return r.json()['permalink_url']
 
+def verify_token(token):
+    url = captcha_api_url
+    body = {'secret':secret,'response':token}
+    r = requests.post(url, headers=headers, data=body)
+    if r.status_code != 200:
+        return False
+    data = r.json()
+    return data['success']
 
 @app.route('/')
 def page_index():
-    return render_template('index.html')
+    return render_template('index.html', website_key=website_key)
 
 @app.route('/most_commented_window_position', methods=['POST'])
 def page_most_commented_window_position():
@@ -95,9 +113,13 @@ def page_most_commented_window_position():
 def page_add_songs_to_playlist():
     if request.method == 'POST':
         songs = json.loads(request.form.get('songs'))
-        if songs is None:
+        token = request.form.get('g-recaptcha-response')
+        if songs is None or token is None or not verify_token(token):
+            print("[!] invalid access to add_songs_to_playlist")
             return 'Error'
         playlist_id = create_empty_public_playlist('sc-explorer-playlist')
+        if playlist_id == 'error':
+            return 'Error creating playlist'
         playlist_url = add_songs_to_playlist(playlist_id, songs)
         if playlist_url == None:
             return "Error"
