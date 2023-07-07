@@ -1,5 +1,7 @@
 client_id
 oauth
+secret
+website_key
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
