@@ -13,6 +13,8 @@ Idea taken from https://twitter.com/yush_g (https://github.com/Divide-By-0/ideas
 $ pip install -r requirements.txt
 $ echo YOUR_CLIENT_ID > client_id
 $ echo YOUR_OAUTH_TOKEN > oauth
+$ echo YOUR_RECAPTCHA_WEBSITE_KEY > website_key
+$ echo YOUR_RECAPTCHA_SECRET > secret
 $ flask --app sc-explorer run --debug
 ```
 
