@@ -2,6 +2,8 @@ client_id
 oauth
 secret
 website_key
+cookie_banner
+cookie_declaration
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
