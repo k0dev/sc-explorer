@@ -13,6 +13,10 @@ with open('secret', 'r') as f:
     secret = f.read().strip()
 with open('website_key') as f:
     website_key = f.read().strip()
+with open('cookie_declaration_html') as f:
+    cookie_declaration_html = f.read()
+with open('cookie_banner_html') as f:
+    cookie_banner_html = f.read()
 
 api_url = 'https://api-v2.soundcloud.com'
 captcha_api_url = 'https://www.google.com/recaptcha/api/siteverify'
@@ -98,7 +102,11 @@ def verify_token(token):
 
 @app.route('/')
 def page_index():
-    return render_template('index.html', website_key=website_key)
+    return render_template('index.html', website_key=website_key, cookie_banner=cookie_banner_html)
+
+@app.route('/cookie-declaration')
+def page_cookie_declaration():
+    return render_template('cookie-declaration.html', cookie_declaration=cookie_declaration_html)
 
 @app.route('/most_commented_window_position', methods=['POST'])
 def page_most_commented_window_position():

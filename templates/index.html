@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
+        {{ cookie_banner|safe }}
         <title>sc-explorer</title>
         <script src="https://w.soundcloud.com/player/api.js" type="text/javascript"></script>
         <script
@@ -14,6 +15,7 @@
     <body>
         <center>
         <a href=""><h1>sc-explorer</h1></a>
+        <a href="/cookie-declaration">Cookie declaration</a>
         <h3>Play the most commented 10 seconds of a random song on SoundCloud® and add it to a playlist if you like it!</h3>
         <h4>When you are satisfied, click on "Create playlist" to stop exploring and generate your playlist!</h4> 
         <br>
@@ -39,10 +41,10 @@
         </form>
         </center>
         <script type="text/javascript">
-            let creatingPlaylist = false;
-            let widgetIframe = document.getElementById('sc-widget');
-            let widget = SC.Widget(widgetIframe);
-            let liked_songs = [];
+            var creatingPlaylist = false;
+            var widgetIframe = document.getElementById('sc-widget');
+            var widget = SC.Widget(widgetIframe);
+            var liked_songs = [];
 
             function enableCreate() {
                 document.getElementById('liked_songs').value = JSON.stringify(liked_songs);
@@ -128,7 +130,7 @@
            function onSubmit(token) {
              document.getElementById("demo-form").submit();
            }
- </script>
+         </script>
 
     </body>
 </html>
