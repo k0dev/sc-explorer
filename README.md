@@ -15,6 +15,8 @@ $ echo YOUR_CLIENT_ID > client_id
 $ echo YOUR_OAUTH_TOKEN > oauth
 $ echo YOUR_RECAPTCHA_WEBSITE_KEY > website_key
 $ echo YOUR_RECAPTCHA_SECRET > secret
+$ echo YOUR_COOKIEBOT_DECLARATION_SCRIPT > cookie_declaration_html
+$ echo YOUR_COOKIEBOT_BANNER_SCRIPT > cookie_banner_html
 $ flask --app sc-explorer run --debug
 ```
 
