@@ -137,6 +137,7 @@ chart_cache = {}
 
 @app.route('/chart_to_playlist', methods=['POST'])
 def page_chart_to_playlist():
+    global chart_cache
     print('chart cache:')
     print(chart_cache)
     if request.method == 'POST':
