@@ -132,3 +132,36 @@ def page_add_songs_to_playlist():
         if playlist_url == None:
             return "Error"
         return 'Playlist created <a href="' + playlist_url + '">HERE</a>'
+
+chart_cache = {}
+
+@app.route('/chart_to_playlist', methods=['POST'])
+def page_chart_to_playlist():
+    if request.method == 'POST':
+        chart_url = request.form.get('url')
+        if chart_url is None or 'sets/charts-top:' not in chart_url:
+            print('[-] invalid access to /chart_to_playlist')
+            return jsonify({'success': False})
+        chart_name = chart_url.split('sets/charts-top:')[1]
+        if chart_name in chart_cache:
+            print('[*] using cache instead of converting chart to playlist')
+            return jsonify({'success': True, 'url': chart_cache[chart_name]})
+        print('[*] Converting ' + chart_url + ' to a public playlist')
+        url = api_url + '/resolve?client_id=' + client_id + '&url=' + chart_url
+        r = requests.get(url, headers=authenticated_headers)
+        data = r.json()
+        if data['kind'] != 'system-playlist':
+            print('[-] invalid access to /chart_to_playlist')
+            return jsonify({'success': False})
+        ids = [t['id'] for t in filter(lambda t: (t['monetization_model'] != 'SUB_HIGH_TIER'), data['tracks'])]
+        if len(ids) < 1:
+            print('[-] error getting song ids from chart')
+            return jsonify({'success': False})
+        playlist_id = create_empty_public_playlist(chart_name)
+        if playlist_id == 'error':
+            return jsonify({'success': False})
+        playlist_url = add_songs_to_playlist(playlist_id, ids)
+        if playlist_url == None:
+            return jsonify({'success': False})
+        chart_cache[chart_name] = playlist_url
+        return jsonify({'success': True, 'url': playlist_url})

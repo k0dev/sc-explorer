@@ -99,8 +99,33 @@
         }
 
         function beginExploring() {
+            document.getElementById('beginExploring').disabled = true;
             playlist_url = document.getElementById('playlist_url').value;
+            if (playlist_url.startsWith('https://m.')) {
+                playlist_url = playlist_url.replace('https://m.', 'https://')
+            }
+            if (playlist_url.includes('sets/personalized-tracks::')) {
+                alert("Can't explore a personalized tracks playlist! Those kind of playlists are private to your account, we can't access them");
+                document.getElementById('beginExploring').disabled = false;
+                return;
+            }
+            if (playlist_url.includes('discover/sets/charts-top:')) {
+                let r = $.ajax({
+                    type: 'POST',
+                    url: '/chart_to_playlist',
+                    data: { url: playlist_url },
+                    async: false,
+                    success: () => { }
+                });
+                if (r.status != 200 || !r.responseJSON.success) {
+                    alert("You provided an invalid system playlist");
+                    document.getElementById('beginExploring').disabled = false;
+                    return;
+                }
+                playlist_url = r.responseJSON.url
+            }
             widget.load(playlist_url);
+
             document.getElementById('playlist_url').style.display = 'none';
             document.getElementById('beginExploring').style.display = 'none';
             document.getElementById('skip').style.display = 'inline-block';
