@@ -137,6 +137,8 @@ chart_cache = {}
 
 @app.route('/chart_to_playlist', methods=['POST'])
 def page_chart_to_playlist():
+    print('chart cache:')
+    print(chart_cache)
     if request.method == 'POST':
         chart_url = request.form.get('url')
         if chart_url is None or 'sets/charts-top:' not in chart_url:
@@ -146,7 +148,7 @@ def page_chart_to_playlist():
         if chart_name in chart_cache:
             print('[*] using cache instead of converting chart to playlist')
             return jsonify({'success': True, 'url': chart_cache[chart_name]})
-        print('[*] Converting ' + chart_url + ' to a public playlist')
+        print('[*] Converting ' + chart_name + ' to a public playlist')
         url = api_url + '/resolve?client_id=' + client_id + '&url=' + chart_url
         r = requests.get(url, headers=authenticated_headers)
         data = r.json()
@@ -164,4 +166,5 @@ def page_chart_to_playlist():
         if playlist_url == None:
             return jsonify({'success': False})
         chart_cache[chart_name] = playlist_url
+        print('[*] ' + chart_name + ' cached')
         return jsonify({'success': True, 'url': playlist_url})
