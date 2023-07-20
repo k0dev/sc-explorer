@@ -131,7 +131,7 @@ def page_add_songs_to_playlist():
         playlist_url = add_songs_to_playlist(playlist_id, songs)
         if playlist_url == None:
             return "Error"
-        return 'Playlist created <a href="' + playlist_url + '">HERE</a>'
+        return render_template('playlist.html', playlist_url=playlist_url)
 
 chart_cache = {}
 
