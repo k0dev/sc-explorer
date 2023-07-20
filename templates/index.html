@@ -19,20 +19,20 @@
                 <a href="">
                     <img src="/static/logo.png" alt="logo" />
                 </a>
-                <a href="/cookie-declaration" target="_blank" class="text-xs underline">(cookie declaration)</a>
-                <br><br>
+                <a href="/cookie-declaration" target="_blank" class="text-xs underline">(cookie declaration)</a><br><br>
+                <p id="explanation" class="break-normal max-w-xl text-slate-50">Insert a soundcloud playlist url and start exploring! You will listen the most commented 10 seconds of each song and decide if you want them in the playlist or not. You may stop exploring and create the playlist at any time!</p>
                 <table width="100%">
                     <tr>
                         <td width="30%" style="text-align:right"><button
                                 class="mr-2 border-neutral-100 rounded-md border-solid border-2 disabled:opacity-50 text-red-600 border-red-600"
-                                style="display:none;height:166px;width:200px" id="skip">Skip</button></td>
+                                style="display:none;height:166px;width:200px" id="skip" onclick="skip();">Skip</button></td>
                         <td width="40%"><iframe id="sc-widget" style="display: none" width="100%" height="166px"
                                 scrolling="no" frameborder="no"
                                 src="https://w.soundcloud.com/player/?url=https://soundcloud.com/sc-explorer/sets/top-50-dance-edm?auto_play=false&color=2272ff"></iframe>
                         </td>
                         <td width="30%" style="text-align:left"><button
                                 class="ml-2 border-neutral-100 rounded-md border-solid border-2 disabled:opacity-50 text-green-400"
-                                style="display:none;height:166px;width:200px;border-color:rgb(74 222 128);" id="add">Add
+                                style="display:none;height:166px;width:200px;border-color:rgb(74 222 128);" id="add" onclick="add();">Add
                                 to playlist</button></td>
                     </tr>
                     <tr>
@@ -70,7 +70,6 @@
             document.getElementById('liked_songs').value = JSON.stringify(liked_songs);
             document.getElementById('form').submit();
         }
-
         function createPlaylist() {
             widget.pause();
             creatingPlaylist = true;
@@ -78,24 +77,64 @@
             document.getElementById('create').disabled = true;
             document.getElementById('create').innerHTML = 'Please, complete the captcha to continue';
         }
+        var sound_array = null;
+        var songIndex = -1;
+        const buttons = [document.getElementById('skip'), document.getElementById('add')];
 
-        function getPromiseFromEvent(items, event, song_id) {
-            return new Promise((resolve) => {
-                const listener = (evt) => {
-                    if (evt.srcElement.id == 'add') {
-                        liked_songs.push(song_id);
-                        document.getElementById('create').disabled = false;
+        function disableButtons() {
+            buttons[0].disabled = true;
+            buttons[1].disabled = true;
+        }
+        function playNextSong() {
+            songIndex++;
+            if (songIndex >= sound_array.length) {
+                alert('You listened to every song in this playlist! Create your playlist or start over again');
+                return;
+            }
+            let i = songIndex;
+            let r = $.ajax({
+                type: 'POST',
+                url: '/most_commented_window_position',
+                data: { song_id: sound_array[i].id },
+                async: true,
+                success: () => {
+                    let window_position = r.responseJSON.position;
+                    if (window_position == -1) {
+                        console.log('There was an error locating the most commented 10 seconds... Defaulting to 0');
+                        window_position = 0;
                     }
-                    items.forEach(function (currentValue, currentIndex, listObj) {
-                        currentValue.removeEventListener(event, listener);
-                    });
-                    resolve();
+                    widget.skip(i);
+                    widget.seekTo(window_position);
+                    widget.play();
+                    waitTenSeconds();
+                },
+                error: () => {
+                    console.log('server error');
+                    widget.skip(i);
+                    widget.seekTo(0);
+                    widget.play();
+                    waitTenSeconds();
                 }
+            });
+        }
 
-                items.forEach(function (currentValue, currentIndex, listObj) {
-                    currentValue.addEventListener(event, listener);
-                });
-            })
+        async function waitTenSeconds() {
+            await new Promise(r => setTimeout(r, 10000));
+            if (!creatingPlaylist)
+                buttons.forEach((b) => b.disabled = false);
+            widget.pause();
+        }
+
+        function add() {
+            disableButtons();
+            liked_songs.push(sound_array[songIndex].id);
+            document.getElementById('create').disabled = false;
+            playNextSong();
+        }
+
+        function skip() {
+            disableButtons();
+            playNextSong();
         }
 
         function beginExploring() {
@@ -132,42 +171,13 @@
             document.getElementById('add').style.display = 'inline-block';
             document.getElementById('create').style.display = 'inline-block';
             widgetIframe.style.display = 'block';
-
-            const buttons = [document.getElementById('skip'), document.getElementById('add')];
-
             widget.bind(SC.Widget.Events.READY, function () {
-                widget.getSounds(async function (sound_array) {
-                    for (let i = 0; i < sound_array.length; i++) {
-                        buttons.forEach((b) => b.disabled = true);
-                        let r = $.ajax({
-                            type: 'POST',
-                            url: '/most_commented_window_position',
-                            data: { song_id: sound_array[i].id },
-                            async: false,
-                            success: () => { }
-                        });
-
-                        if (r.status != 200 || r.responseJSON.position == -1) {
-                            continue;
-                        }
-
-                        let window_position = r.responseJSON.position;
-                        if (window_position == -1) {
-                            alert('There was an error locating the most commented 10 seconds... Defaulting to 0');
-                            window_position = 0;
-                        }
-                        widget.skip(i);
-                        widget.seekTo(window_position);
-                        widget.play();
-                        await new Promise(r => setTimeout(r, 11000));
-                        widget.pause();
-                        if (!creatingPlaylist)
-                            buttons.forEach((b) => b.disabled = false);
-                        await getPromiseFromEvent(buttons, "click", sound_array[i].id)
-                    }
-                    alert('You listened to every song in this playlist! Create your playlist or start over again');
-                });
-            });
+                widget.getSounds(async function (sa) {
+                    disableButtons();
+                    sound_array = sa;
+                    playNextSong();
+                }
+            )});
         }
     </script>
     <script>
