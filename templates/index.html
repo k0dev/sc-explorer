@@ -23,7 +23,7 @@
                 <p id="explanation" class="break-normal max-w-xl text-slate-50">Insert a soundcloud playlist url and start exploring! You will listen the most commented 10 seconds of each song and decide if you want them in the playlist or not. You may stop exploring and create the playlist at any time!</p>
                 <table width="100%">
                     <br>
-                    <tr>
+                    <tr id="first_row">
                         <td width="30%" style="text-align:right"><button
                                 class="mr-2 border-neutral-100 rounded-md border-solid border-2 disabled:opacity-50 text-red-600 border-red-600"
                                 style="display:none;height:166px;width:200px" id="skip" onclick="skip();">Skip</button></td>
@@ -43,10 +43,8 @@
                                 disabled>Create playlist</button></td>
                     </tr>
                 </table>
-                <br><br>
                 <input class="rounded-xl w-7/12 placeholder:text-slate-500 bg-white py-2 pl-3 pr-3 text-slate-950"
                     placeholder="Playlist URL..." type="text" id="playlist_url" />
-                <br><br>
                 <button id="beginExploring" class="border-neutral-100 p-2 rounded-xl border-solid border-2"
                     onclick="beginExploring()">Begin exploring</button>
         <form method="POST" id="form" action="/add_songs_to_playlist">
@@ -77,6 +75,7 @@
             document.getElementById('captcha').style.display = 'inline-block';
             document.getElementById('create').disabled = true;
             document.getElementById('create').innerHTML = 'Please, complete the captcha to continue';
+            document.getElementById('first_row').style.display = 'none';
         }
         var sound_array = null;
         var songIndex = -1;
