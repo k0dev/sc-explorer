@@ -17,6 +17,7 @@ $ echo YOUR_RECAPTCHA_WEBSITE_KEY > website_key
 $ echo YOUR_RECAPTCHA_SECRET > secret
 $ echo YOUR_COOKIEBOT_DECLARATION_SCRIPT > cookie_declaration_html
 $ echo YOUR_COOKIEBOT_BANNER_SCRIPT > cookie_banner_html
+$ mv path_to_logo.png static/logo.png
 $ flask --app sc-explorer run --debug
 ```
 

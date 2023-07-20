@@ -4,6 +4,7 @@ secret
 website_key
 cookie_banner_html
 cookie_declaration_html
+static/logo.png
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
