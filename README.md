@@ -1,6 +1,8 @@
 # sc-explorer
 Plays the most commented 10 seconds of a random song on SoundCloud® and adds it to a playlist if you like it
 
+LIVE DEMO: [soundswipe](http://soundswipe.org/)
+
 ## This script uses undocumented SoundCloud® APIs (since you cannot currently ask for an api key). Use it at your own risk! (theoretically your account might get banned)
 ## TODO
 - TODO: better UI lol
