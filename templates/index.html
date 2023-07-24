@@ -10,6 +10,32 @@
         integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous">
         </script>
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <style>
+        .plus-button {
+            align-items: center;
+            justify-content: center;
+            background-color: #29ed26;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 70px;
+            cursor: pointer;
+            height:166px;
+            width:200px;
+        }
+        .minus-button {
+            align-items: center;
+            justify-content: center;
+            background-color: #f50519;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 80px;
+            cursor: pointer;
+            height:166px;
+            width:200px;
+        }
+    </style>
 </head>
 
 <body class="bg-zinc-950 text-neutral-50">
@@ -20,25 +46,24 @@
                     <img src="/static/logo.png" alt="logo" />
                 </a>
                 <a href="/cookie-declaration" target="_blank" class="text-xs underline">(cookie declaration)</a><br><br>
-                <p id="explanation" class="break-normal max-w-xl text-slate-50">Insert a soundcloud playlist url and start exploring! You will listen the most commented 10 seconds of each song and decide if you want them in the playlist or not. You may stop exploring and create the playlist at any time!</p>
+                <p id="explanation" class="break-normal max-w-4xl text-slate-50 text-xl">Insert a <a target="_blank" class="underline" href="https://soundcloud.com">SoundCloud</a> playlist url and start exploring! You will listen the most commented part of each song and decide if you want them in the playlist or not. You may stop exploring and create the playlist at any time! Occasionally a popup might appear on the music player, close it or just ignore it. This project is free and open source, avaiable on <a target="_blank" class="underline" href="https://github.com/k0dev/sc-explorer">GitHub</a></p>
                 <table width="100%">
                     <br>
                     <tr id="first_row">
                         <td width="30%" style="text-align:right"><button
-                                class="mr-2 border-neutral-100 rounded-md border-solid border-2 disabled:opacity-50 text-red-600 border-red-600"
-                                style="display:none;height:166px;width:200px" id="skip" onclick="skip();">Skip</button></td>
+                                class="minus-button border-neutral-100 rounded-md border-solid border-2 disabled:opacity-50"
+                                style="display:none;height:166px;width:200px" id="skip" onclick="skip();">-</button></td>
                         <td width="40%"><iframe id="sc-widget" style="display: none" width="100%" height="166px"
                                 scrolling="no" frameborder="no"
                                 src="https://w.soundcloud.com/player/?url=https://soundcloud.com/sc-explorer/sets/top-50-dance-edm?auto_play=false&color=2272ff"></iframe>
                         </td>
                         <td width="30%" style="text-align:left"><button
-                                class="ml-2 border-neutral-100 rounded-md border-solid border-2 disabled:opacity-50 text-green-400"
-                                style="display:none;height:166px;width:200px;border-color:rgb(74 222 128);" id="add" onclick="add();">Add
-                                to playlist</button></td>
+                                class="plus-button border-neutral-100 rounded-md border-solid border-2 disabled:opacity-50"
+                                style="display:none;" id="add" onclick="add();">+</button></td>
                     </tr>
                     <tr>
                         <td colspan="3" style="text-align:center"><button
-                                class="mt-2 border-neutral-100 rounded-md border-solid border-2 disabled:opacity-50"
+                                class="mt-2 text-xl border-neutral-100 rounded-md border-solid border-2 disabled:opacity-50"
                                 style="display:none;height:70px;width:35%" onclick="createPlaylist()" id="create"
                                 disabled>Create playlist</button></td>
                     </tr>
