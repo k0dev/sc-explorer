@@ -1,217 +1,220 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
-<head>
-    {{ cookie_banner|safe }}
-    <script src="https://cdn.tailwindcss.com"></script>
-    <title>sc-explorer</title>
-    <script src="https://w.soundcloud.com/player/api.js" type="text/javascript"></script>
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js"
-        integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous">
+    <head>
+        {{ cookie_banner|safe}}
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>SoundSwipe</title>
+        <script src="https://w.soundcloud.com/player/api.js" type="text/javascript"></script>
+        <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+                integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous">
         </script>
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-    <style>
-        .plus-button {
-            align-items: center;
-            justify-content: center;
-            background-color: #29ed26;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 70px;
-            cursor: pointer;
-            height:166px;
-            width:200px;
-        }
-        .minus-button {
-            align-items: center;
-            justify-content: center;
-            background-color: #f50519;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 80px;
-            cursor: pointer;
-            height:166px;
-            width:200px;
-        }
-    </style>
-</head>
+        <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+        <style>
+            .captcha {
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                -webkit-transform: translate(-50%, -50%);
+                transform: translate(-50%, -50%);
+            }
+        </style>
+        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    </head>
 
-<body class="bg-zinc-950 text-neutral-50">
-    <center>
-        <div class="flex h-screen">
-            <div class="m-auto">
-                <a href="/">
-                    <img src="/static/logo.png" alt="logo" />
-                </a>
-                <a href="/cookie-declaration" target="_blank" class="text-xs underline">(cookie declaration)</a><br><br>
-                <p id="explanation" class="break-normal max-w-4xl text-slate-50 text-xl">Insert a <a target="_blank" class="underline" href="https://soundcloud.com">SoundCloud</a> playlist url and start exploring! You will listen the most commented part of each song and decide if you want them in the playlist or not. You may stop exploring and create the playlist at any time! Occasionally a popup might appear on the music player, close it or just ignore it. This project is free and open source, avaiable on <a target="_blank" class="underline" href="https://github.com/k0dev/sc-explorer">GitHub</a></p>
-                <table width="100%">
-                    <br>
-                    <tr id="first_row">
-                        <td width="30%" style="text-align:right"><button
-                                class="minus-button border-neutral-100 rounded-md border-solid border-2 disabled:opacity-50"
-                                style="display:none;height:166px;width:200px" id="skip" onclick="skip();">-</button></td>
-                        <td width="40%"><iframe id="sc-widget" style="display: none" width="100%" height="166px"
-                                scrolling="no" frameborder="no"
-                                src="https://w.soundcloud.com/player/?url=https://soundcloud.com/andrea-296/sets/dance-anni-90-2000-dj-trevo?auto_play=false&color=2272ff"></iframe>
-                        </td>
-                        <td width="30%" style="text-align:left"><button
-                                class="plus-button border-neutral-100 rounded-md border-solid border-2 disabled:opacity-50"
-                                style="display:none;" id="add" onclick="add();">+</button></td>
-                    </tr>
-                    <tr>
-                        <td colspan="3" style="text-align:center"><button
-                                class="mt-2 text-xl border-neutral-100 rounded-md border-solid border-2 disabled:opacity-50"
-                                style="display:none;height:70px;width:35%" onclick="createPlaylist()" id="create"
-                                disabled>Create playlist</button></td>
-                    </tr>
-                </table>
-                <input class="rounded-xl w-7/12 placeholder:text-slate-500 bg-white py-2 pl-3 pr-3 text-slate-950"
-                    placeholder="Playlist URL..." type="text" id="playlist_url" />
-                <button id="beginExploring" class="border-neutral-100 p-2 rounded-xl border-solid border-2"
-                    onclick="beginExploring()">Begin exploring</button>
-        <form method="POST" id="form" action="/add_songs_to_playlist">
-            <div id="captcha" class="g-recaptcha" data-sitekey="{{website_key}}" data-callback="enableCreate" hidden>
+    <body>
+        <div id="state1" class="min-h-screen flex flex-col justify-center items-center bg-gray-100">
+            <div class="max-w-xl p-4 bg-white rounded shadow-md">
+                <h1 class="text-3xl font-bold mb-4">SoundSwipe</h1>
+                <p class="mb-4">Insert a <a target="_blank" href="https://soundcloud.com" class="underline">SoundCloud</a> playlist url and start exploring!
+                You will listen the most commented part of each song and decide if you want them in the new playlist or not. You may sop exploring and create the new
+                playlist at any time! Occasionally a popup might appear on the music player, close it or just ignore it. This project is free and open source, available on
+                <a target="_blank" href="https://github.com/k0dev/sc-explorer">GitHub</a>.</p>
+                <input type="text" id="playlist_url" class="w-full p-2 rounded border border-gray-300 focus:outline-none focus:ring focus:border-blue-300" placeholder="Enter playlist URL">
+                <button id="exploreBtn" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Begin
+                    Exploring</button>
             </div>
-            <input id="liked_songs" type="hidden" name="songs" value="">
-        </form>
+            <footer class="mt-8 text-center">
+                <a href="/cookie-declaration" class="text-blue-500 hover:underline">Cookie declaration</a>
+            </footer>
+        </div>
 
-    </center>
-    </div>
-    </div>
-    <center>
-            </center>
-    <script type="text/javascript">
-        document.getElementById('create').disabled = true;
-        var creatingPlaylist = false;
-        var widgetIframe = document.getElementById('sc-widget');
-        var widget = SC.Widget(widgetIframe);
-        var liked_songs = [];
+        <div id="state2" class="hidden min-h-screen flex flex-col justify-center items-center bg-gray-100">
+            <h1 class="text-3xl font-bold mb-4"><a href="/">SoundSwipe</a></h1>
+            <div id="soundcloudWidget">
+                <iframe id="sc-widget" width="600px" height="166px" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https://soundcloud.com/andrea-296/sets/dance-anni-90-2000-dj-trevo?auto_play=false&color=2272ff"></iframe>
+            </div>
+            <div class="flex gap-4">
+                <button id="create" style="cursor:default;opacity:0.50;" class="px-4 py-2 text-white rounded bg-blue-500" onclick="createPlaylist();" disabled>
+                    Create playlist
+                </button>
+                <button id="skip" class="px-4 py-2 bg-red-500 text-white rounded disabled=opacity-50" onclick="skip();" disabled>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6" width="100px" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 12H4" />
+                    </svg>
+                </button>
+                <button id="add" class="px-4 py-2 bg-green-500 text-white rounded disabled=opacity-50" onclick="add();" disabled>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6" width="100px" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <div id="state3" class="captcha" style="display:none;">
+            <div class="font-xl">Please complete the captcha</div>
+            <form method="POST" id="form" action="/add_songs_to_playlist">
+                <div id="captcha" class="g-recaptcha" data-sitekey="{{website_key}}" data-callback="enableCreate">
+                </div>
+                <input id="liked_songs" type="hidden" name="songs" value="">
+            </form>
+        </div>
+        </div>
 
-        function enableCreate() {
-            document.getElementById('liked_songs').value = JSON.stringify(liked_songs);
-            document.getElementById('form').submit();
-        }
-        function createPlaylist() {
-            widget.pause();
-            creatingPlaylist = true;
-            document.getElementById('captcha').style.display = 'inline-block';
-            document.getElementById('create').disabled = true;
-            document.getElementById('create').innerHTML = 'Please, complete the captcha to continue';
-            document.getElementById('first_row').style.display = 'none';
-            document.getElementById('explanation').style.display = 'none';
-        }
-        var sound_array = null;
-        var songIndex = -1;
-        const buttons = [document.getElementById('skip'), document.getElementById('add')];
+        <script>
+            var creatingPlaylist = false;
+            var widgetIframe = document.getElementById('sc-widget');
+            var widget = SC.Widget(widgetIframe);
+            var liked_songs = [];
 
-        function disableButtons() {
-            buttons[0].disabled = true;
-            buttons[1].disabled = true;
-        }
-        function playNextSong() {
-            songIndex++;
-            if (songIndex >= sound_array.length) {
-                alert('You listened to every song in this playlist! Create your playlist or start over again');
-                return;
+            var sound_array = null;
+            var songIndex = -1;
+            const buttons = [document.getElementById('skip'), document.getElementById('add')];
+
+            // JavaScript to handle state change
+            const state1 = document.getElementById('state1');
+            const state2 = document.getElementById('state2');
+            const exploreBtn = document.getElementById('exploreBtn'); 
+
+            function enableCreate() {
+                document.getElementById('liked_songs').value = JSON.stringify(liked_songs);
+                document.getElementById('form').submit();
             }
-            let i = songIndex;
-            let r = $.ajax({
-                type: 'POST',
-                url: '/most_commented_window_position',
-                data: { song_id: sound_array[i].id },
-                async: true,
-                success: () => {
-                    let window_position = r.responseJSON.position;
-                    if (window_position == -1) {
-                        console.log('There was an error locating the most commented 10 seconds... Defaulting to 0');
-                        window_position = 0;
-                    }
-                    widget.skip(i);
-                    widget.seekTo(window_position);
-                    widget.play();
-                    waitTenSeconds();
-                },
-                error: () => {
-                    console.log('server error');
-                    widget.skip(i);
-                    widget.seekTo(0);
-                    widget.play();
-                    waitTenSeconds();
+
+            function createPlaylist() {
+                widget.pause();
+                creatingPlaylist = true;
+                document.getElementById('state2').style.display = 'none';
+                document.getElementById('state3').style.display = 'block';
+            }
+
+            function disableButtons() {
+                buttons.forEach(b => {
+                    b.disabled = true;
+                    b.style.opacity = 0.50;
+                    b.style.cursor = "default";
+                })
+            }
+
+            function enableButtons() {
+                buttons.forEach(b => {
+                    b.disabled = false;
+                    b.style.opacity = 1.0;
+                    b.style.cursor = "pointer";
+                })
+
+            }
+
+            function playNextSong() {
+                songIndex++;
+                if (songIndex >= sound_array.length) {
+                    alert('You listened to every song in this playlist! Create your playlist or start over again');
+                    return;
                 }
-            });
-        }
-
-        async function waitTenSeconds() {
-            await new Promise(r => setTimeout(r, 10000));
-            if (!creatingPlaylist)
-                buttons.forEach((b) => b.disabled = false);
-            widget.pause();
-        }
-
-        function add() {
-            disableButtons();
-            liked_songs.push(sound_array[songIndex].id);
-            document.getElementById('create').disabled = false;
-            playNextSong();
-        }
-
-        function skip() {
-            disableButtons();
-            playNextSong();
-        }
-
-        function beginExploring() {
-            document.getElementById('beginExploring').disabled = true;
-            playlist_url = document.getElementById('playlist_url').value;
-            if (playlist_url.startsWith('https://m.')) {
-                playlist_url = playlist_url.replace('https://m.', 'https://')
-            }
-            if (playlist_url.includes('sets/personalized-tracks::')) {
-                alert("Can't explore a personalized tracks playlist! Those kind of playlists are private to your account, we can't access them");
-                document.getElementById('beginExploring').disabled = false;
-                return;
-            }
-            if (playlist_url.includes('discover/sets/charts-top:')) {
+                let i = songIndex;
                 let r = $.ajax({
                     type: 'POST',
-                    url: '/chart_to_playlist',
-                    data: { url: playlist_url },
-                    async: false,
-                    success: () => { }
+                    url: '/most_commented_window_position',
+                    data: { song_id: sound_array[i].id },
+                    async: true,
+                    success: () => {
+                        let window_position = r.responseJSON.position;
+                        if (window_position == -1) {
+                            console.log('There was an error locating the most commented 10 seconds... Defaulting to 0');
+                            window_position = 0;
+                        }
+                        widget.skip(i);
+                        widget.seekTo(window_position);
+                        widget.play();
+                        waitTenSeconds();
+                    },
+                    error: () => {
+                        console.log('server error');
+                        widget.skip(i);
+                        widget.seekTo(0);
+                        widget.play();
+                        waitTenSeconds();
+                    }
                 });
-                if (r.status != 200 || !r.responseJSON.success) {
-                    alert("You provided an invalid system playlist");
+            }
+
+            async function waitTenSeconds() {
+                await new Promise(r => setTimeout(r, 10000));
+                if (!creatingPlaylist)
+                    enableButtons();
+                widget.pause();
+            }
+
+            function add() {
+                disableButtons();
+                liked_songs.push(sound_array[songIndex].id);
+                let create = document.getElementById('create');
+                create.disabled = false;
+                create.style.opacity = 1;
+                create.style.cursor = "pointer";
+                playNextSong();
+            }
+
+            function skip() {
+                disableButtons();
+                playNextSong();
+            }
+
+            // begin exploring
+            exploreBtn.addEventListener('click', () => {
+                state1.classList.add('hidden');
+                state2.classList.remove('hidden');
+                playlist_url = document.getElementById('playlist_url').value;
+                if (playlist_url.startsWith('https://m.')) {
+                    playlist_url = playlist_url.replace('https://m.', 'https://')
+                }
+                if (playlist_url.includes('sets/personalized-tracks::')) {
+                    alert("Can't explore a personalized tracks playlist! Those kind of playlists are private to your account, we can't access them");
                     document.getElementById('beginExploring').disabled = false;
                     return;
                 }
-                playlist_url = r.responseJSON.url
-            }
-            widget.load(playlist_url);
-
-            document.getElementById('playlist_url').style.display = 'none';
-            document.getElementById('beginExploring').style.display = 'none';
-            document.getElementById('skip').style.display = 'inline-block';
-            document.getElementById('add').style.display = 'inline-block';
-            document.getElementById('create').style.display = 'inline-block';
-            widgetIframe.style.display = 'block';
-            widget.bind(SC.Widget.Events.READY, function () {
-                widget.getSounds(async function (sa) {
-                    disableButtons();
-                    sound_array = sa;
-                    playNextSong();
+                if (playlist_url.includes('discover/sets/charts-top:')) {
+                    let r = $.ajax({
+                        type: 'POST',
+                        url: '/chart_to_playlist',
+                        data: { url: playlist_url },
+                        async: false,
+                        success: () => { }
+                    });
+                    if (r.status != 200 || !r.responseJSON.success) {
+                        alert("You provided an invalid system playlist");
+                        document.getElementById('beginExploring').disabled = false;
+                        return;
+                    }
+                    playlist_url = r.responseJSON.url
                 }
-            )});
-        }
-    </script>
-    <script>
-        function onSubmit(token) {
-            document.getElementById("demo-form").submit();
-        }
-    </script>
+                widget.load(playlist_url);
+                widget.bind(SC.Widget.Events.READY, function () {
+                    widget.getSounds(async function (sa) {
+                        disableButtons();
+                        sound_array = sa;
+                        playNextSong();
+                    }
+                    )});
+            });
+        </script>
+        <script>
+            function onSubmit(token) {
+                document.getElementById("demo-form").submit();
+            }
+        </script>
 
-</body>
+    </body>
 
 </html>
+
