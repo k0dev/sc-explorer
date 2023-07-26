@@ -1,7 +1,7 @@
 import json
 import requests
 
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, send_from_directory
 
 app = Flask(__name__)
 
@@ -134,6 +134,10 @@ def page_add_songs_to_playlist():
         return render_template('playlist.html', playlist_url=playlist_url)
 
 chart_cache = {}
+
+@app.route('/robots.txt')
+def page_robots():
+    return send_from_directory('static', 'robots.txt')
 
 @app.route('/chart_to_playlist', methods=['POST'])
 def page_chart_to_playlist():
