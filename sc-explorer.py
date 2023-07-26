@@ -42,7 +42,7 @@ def most_commented_window_position(client_id, track_id, comments_per_request, ti
     track_duration_ms = response['duration']
     track_duration_sec = response['duration'] // 1000
     
-    if not commentable or track_duration_sec < 20 or track_duration_sec > 300 or response['media']['transcodings'][0]['snipped']: # TODO: handle this better
+    if not commentable or track_duration_sec < 20 or track_duration_sec > 300 or len(response['media']['transcodings']) < 1 or response['media']['transcodings'][0]['snipped']: # TODO: handle this better
         return -1
 
     comments_count = min(max_comments, comments_count)
