@@ -40,22 +40,20 @@
             </footer>
         </div>
 
-        <div id="state2" class="hidden min-h-screen flex flex-col justify-center items-center bg-gray-100">
+        <div id="state2" width="100%" class="hidden min-h-screen flex flex-col justify-center items-center bg-gray-100">
             <h1 class="text-3xl font-bold mb-4"><a href="/">SoundSwipe</a></h1>
-            <div id="soundcloudWidget">
-                <iframe id="sc-widget" width="600px" height="166px" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https://soundcloud.com/andrea-296/sets/dance-anni-90-2000-dj-trevo?auto_play=false&color=2272ff"></iframe>
-            </div>
+                <iframe id="sc-widget" class="max-w-xl" width="80%" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https://soundcloud.com/andrea-296/sets/dance-anni-90-2000-dj-trevo?auto_play=false&color=2272ff"></iframe>
             <div class="flex gap-4">
                 <button id="create" style="cursor:default;opacity:0.50;" class="px-4 py-2 text-white rounded bg-blue-500" onclick="createPlaylist();" disabled>
                     Create playlist
                 </button>
                 <button id="skip" class="px-4 py-2 bg-red-500 text-white rounded disabled=opacity-50" onclick="skip();" disabled>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6" width="100px" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6" width="100%" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 12H4" />
                     </svg>
                 </button>
                 <button id="add" class="px-4 py-2 bg-green-500 text-white rounded disabled=opacity-50" onclick="add();" disabled>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6" width="100px" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6" width="100%" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
                     </svg>
                 </button>
